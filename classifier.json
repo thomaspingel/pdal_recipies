@@ -1,0 +1,34 @@
+{
+  "pipeline": [
+    {
+      "type": "filters.assign",
+	  "value":  "Classification = 0"
+    },
+    {
+      "type": "filters.smrf",
+	    "scalar":1.2,
+        "slope":0.2,
+        "threshold":0.5,
+        "window":20.0
+    },
+	{
+		"type": "filters.hag_nn"
+	},
+	{
+		"type": "filters.assign",
+		  "value" :
+		    [
+			  "Classification = 18 WHERE HeightAboveGround >= 100",
+		      "Classification = 3 WHERE HeightAboveGround < 100 && Classification!=2",
+			  "Classification = 7 WHERE HeightAboveGround < -10"
+		    ]
+	},
+	{
+        "type":"filters.approximatecoplanar"
+    },
+    {
+        "type":"filters.assign",
+		"value" : "Classification = 6 WHERE Coplanar == 1 && Classification!=2"
+    }		
+  ]
+}
